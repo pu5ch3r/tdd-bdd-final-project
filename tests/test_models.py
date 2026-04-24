@@ -104,3 +104,38 @@ class TestProductModel(unittest.TestCase):
     #
     # ADD YOUR TEST CASES HERE
     #
+    def test_read_a_product(self):
+        """It should read the product"""
+        product = ProductFactory()
+        product.id = None
+        logger.info("new product: {product}")        
+        product.create()
+        self.assertIsNotNone(product.id)
+        new_product = Product.find(product.id)
+        self.assertEqual(new_product.name, product.name)
+        self.assertEqual(new_product.description, product.description)
+        self.assertEqual(new_product.price, product.price)
+        self.assertEqual(new_product.available, product.available)
+        self.assertEqual(new_product.category, product.category)
+
+    def test_update_a_product(self):
+        """It should update a product in the database"""
+        product = ProductFactory()
+        logger.info("update product: {product}")
+        product.id = None
+        product.create()
+        logger.info("product created: {product}")
+        self.assertIsNotNone(product.id)
+        product.description = "New description"
+        original_id = product.id
+        product.update()
+        self.assertEqual(original_id, product.id)
+        self.assertEqual(product.description, "New description")
+
+        all_products = Product.all()
+        self.assertEqual(len(all_products), 1)
+        self.assertEqual(all_products[0].id, original_id)
+        self.assertEqual(all_products[0].description, "New description")
+
+    def test_list_all_products(self):
+        
