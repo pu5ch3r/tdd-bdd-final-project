@@ -98,9 +98,15 @@ def create_products():
 # L I S T   A L L   P R O D U C T S
 ######################################################################
 
-#
-# PLACE YOUR CODE TO LIST ALL PRODUCTS HERE
-#
+@app.route("/products", methods=["GET"])
+def list_products():
+    """returns a list of all products"""
+    app.logger.info("request received to return all products")
+    product_list = Product.all()
+    data = [product.serialize() for product in product_list]
+    app.logger.info(f"{len(product_list)} products returned.")
+    return data, status.HTTP_200_OK
+
 
 ######################################################################
 # R E A D   A   P R O D U C T
@@ -144,7 +150,15 @@ def update_products(product_id):
 # D E L E T E   A   P R O D U C T
 ######################################################################
 
+@app.route("/products/<int:product_id>", methods=["DELETE"])
+def delete_products(product_id):
+    """Deletes a product specified by id"""
+    app.logger.info(f"delete request for product {product_id}")
 
-#
-# PLACE YOUR CODE TO DELETE A PRODUCT HERE
-#
+    product = Product.find(product_id)
+    if not product:
+        abort(status.HTTP_404_NOT_FOUND, f"product {product_id} was not found.")
+
+    product.delete()
+    app.logger.info(f"product_id {product_id} was deleted.")
+    return "", status.HTTP_204_NO_CONTENT

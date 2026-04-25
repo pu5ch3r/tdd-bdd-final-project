@@ -200,21 +200,35 @@ class TestProductRoutes(TestCase):
         
     def test_delete_a_product(self):
         """It should delete a product by id"""
-        # create a product
-        test_product = ProductFactory()
-        response = self.client.post(f"{BASE_URL}", json=test_product.serialize())
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # create some products
+        products = self._create_products(5)
+        count = self.get_product_count()
+        test_product = products[0]        
         product_id = test_product.id
 
         # delete product
         response = self.client.delete(f"{BASE_URL}/{product_id}")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(response.data), 0)
 
         # ensure product is deleted from db
         response = self.client.get(f"{BASE_URL}/{product_id}")
         data = response.get_json()
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)        
         self.assertIn("not found", data["message"])
+
+        new_count = self.get_product_count()
+        self.assertEqual(new_count, count - 1)
+
+    def test_get_all_products(self):
+        """returns all products"""
+        self._create_products(5)
+
+        response = self.client.get(f"{BASE_URL}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.get_json()
+        self.assertEqual(len(data), 5)
 
     ######################################################################
     # Utility functions
@@ -222,7 +236,7 @@ class TestProductRoutes(TestCase):
 
     def get_product_count(self):
         """save the current number of products"""
-        response = self.client.get(BASE_URL)
+        response = self.client.get(f"{BASE_URL}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         # logging.debug("data = %s", data)
