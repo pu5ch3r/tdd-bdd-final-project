@@ -132,3 +132,74 @@ def step_impl(context, element_name, text_string):
     )
     element.clear()
     element.send_keys(text_string)
+
+@when(u'I press the "{button_name}" button')
+def step_impl(context, button_name):
+    element_id = button_name.lower().replace(' ', '_')
+    element = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
+    element.click()
+
+@then(u'I should see the message "Success"')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then I should see the message "Success"')
+
+
+@then(u'I should see "Yummy burger" in the results')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then I should see "Yummy burger" in the results')
+
+
+@then(u'I should not see "1/4 lb burger" in the results')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then I should not see "1/4 lb burger" in the results')
+
+@then(u'I should see the message "Product has been Deleted!"')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then I should see the message "Product has been Deleted!"')
+
+
+@then(u'I should not see "Full bed sheets" in the results')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then I should not see "Full bed sheets" in the results')
+
+
+@then(u'I should see "Hat" in the results')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then I should see "Hat" in the results')
+
+
+@then(u'I should see "Shoes" in the results')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then I should see "Shoes" in the results')
+
+
+@then(u'I should see "Sheets" in the results')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then I should see "Sheets" in the results')
+
+
+@then(u'I should see "Big Mac" in the results')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then I should see "Big Mac" in the results')
+
+
+@then(u'I should not see "Shoes" in the results')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then I should not see "Shoes" in the results')
+
+
+@then(u'I should not see "Sheets" in the results')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then I should not see "Sheets" in the results')
+
+
+@then(u'I should not see "Hat" in the results')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then I should not see "Hat" in the results')
+
+
+@when(u'I select "True" in the Available dropdown')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: When I select "True" in the Available dropdown')

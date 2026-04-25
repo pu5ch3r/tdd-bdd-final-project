@@ -90,11 +90,43 @@ Scenario: Delete a Product
     And I press the "Search" button
     Then I should not see "Full bed sheets" in the results
 
-
 Scenario: List all Products
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Hat" in the results
+    And I should see "Shoes" in the results
+    And I should see "Sheets" in the results
+    And I should see "Big Mac" in the results
 
 Scenario: Search for Products by Category
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I select "Food" in the "Category" dropdown
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Big Mac" in the results
+    And I should not see "Shoes" in the results
+    And I should not see "Sheets" in the results
+    And I should not see "Hat" in the results
 
 Scenario: Search for Products by Availability
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I select "True" in the "Available" dropdown
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Big Mac" in the results
+    And I should see "Hat" in the results
+    And I should see "Sheets" in the results
+    And I should not see "Shoes" in the results
 
 Scenario: Search for Products by Name
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I set the "Name" to "Sheets"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Sheets" in the "Name" field
+    And I should see "Full bed sheets" in the "Description" field
