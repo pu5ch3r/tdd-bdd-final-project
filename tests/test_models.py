@@ -27,7 +27,7 @@ import os
 import logging
 import unittest
 from decimal import Decimal
-from service.models import Product, Category, db
+from service.models import Product, Category, db, DataValidationError
 from service import app
 from tests.factories import ProductFactory
 
@@ -128,6 +128,12 @@ class TestProductModel(unittest.TestCase):
         self.assertIsNotNone(product.id)
         product.description = "New description"
         original_id = product.id
+
+        product.id = None
+        with self.assertRaises(DataValidationError):
+            product.update()
+
+        product.id = original_id
         product.update()
         self.assertEqual(original_id, product.id)
         self.assertEqual(product.description, "New description")
@@ -185,7 +191,7 @@ class TestProductModel(unittest.TestCase):
         for prod in product_matches:
             self.assertEqual(prod.name, product_name)
 
-    def find_by_availability(self):
+    def test_find_by_availability(self):
         """It should find products by availability"""
         # empty db
         self.assertEqual(len(Product.all()), 0)
@@ -194,15 +200,15 @@ class TestProductModel(unittest.TestCase):
         for product in product_list:
             product.create()
 
-        available = product_list.availability
-        count = sum(1 for product in product_list if product.availability)
+        available = product_list[0].available
+        count = sum(1 for product in product_list if product.available == available)
 
-        product_matches = Product.find_by_availability(available)
-        self.assertEqual(len(product_matches), count)
+        product_matches = Product.find_by_availability(available=available)
+        self.assertEqual(product_matches.count(), count)
         for product in product_matches:
-            self.assertEqual(product.availability, available)
+            self.assertEqual(product.available, available)
 
-    def find_by_category(self):
+    def test_find_by_category(self):
         """It should find products by category"""
         # empty db
         self.assertEqual(len(Product.all()), 0)
@@ -214,6 +220,91 @@ class TestProductModel(unittest.TestCase):
         category = product_list[0].category
         count = sum(1 for product in product_list if product.category == category)
         product_matches = Product.find_by_category(category)
-        self.assertEqual(len(product_matches), count)
+        self.assertEqual(product_matches.count(), count)
         for product in product_matches:
             self.assertEqual(product.category, category)
+
+    def test_find_by_price(self):
+        """It should find products by price"""
+        # empty db
+        self.assertEqual(len(Product.all()), 0)
+
+        product_list = ProductFactory.create_batch(10)
+        for product in product_list:
+            product.create()
+
+        # Use a Decimal as price parameter
+        price = product_list[0].price
+        count = sum(1 for product in product_list if product.price == price)
+        product_matches = Product.find_by_price(price)
+        self.assertEqual(product_matches.count(), count)
+        for product in product_matches:
+            self.assertEqual(product.price, price)
+
+        # Use a string as price parameter
+        product_matches = Product.find_by_price(str(price))
+        self.assertEqual(product_matches.count(), count)
+
+    def test_serialize_product(self):
+        """It should serialize a product to a dictionary"""
+
+    def test_deserialize_product_exceptions(self):        
+        """It should catch exceptions when deserialize a product from a dictionary"""
+        # empty db
+        self.assertEqual(len(Product.all()), 0)
+
+        product_dict = {
+            "name": "Foo",
+            "description": "Baz Bar",
+            "price": "567.89",
+            "available": "True",
+            "category": "CLOTHS"
+        }
+        product = Product()        
+        with self.assertRaises(DataValidationError):
+            product.deserialize(data=product_dict)
+
+        product_dict = {
+            "name": "Waldo Bar",
+            "description": "Fred Bar",
+            "price": "1111.99",
+            "available": "FALSE",
+            "category": "AUTOMOTIVE"
+        }
+
+        product = Product()        
+        with self.assertRaises(DataValidationError):
+            product.deserialize(data=product_dict)
+
+        product_dict = {
+            "name": None,
+            "description": "",
+            "pritzel": False,
+            "available": None,
+            "category": "OTHER"
+        }
+
+        product = Product()        
+        with self.assertRaises(DataValidationError):
+            product.deserialize(data=product_dict)
+
+
+    def test_deserialize_product(self):        
+        """It should deserialize a product from a dictionary"""
+        # empty db
+        self.assertEqual(len(Product.all()), 0)
+
+        product_dict = {
+            "name": "Foobar",
+            "description": "Fred",
+            "price": "1111.99",
+            "available": False,
+            "category": "FOOD"
+        }
+        product = Product()
+
+        product.deserialize(data=product_dict)
+        product.create()
+
+        self.assertEqual(product.name, product_dict["name"])
+        self.assertEqual(product.description, product_dict["description"])        
