@@ -104,6 +104,8 @@ def list_products():
     """returns a list of all products"""
     name_param = request.args.get("name")
     category_param = request.args.get("category")
+    available_param = request.args.get("available")
+
     product_list = []
     if name_param:
         app.logger.info("request received to return products with name: {name_param}")
@@ -112,6 +114,10 @@ def list_products():
         app.logger.info("request received to return products with category: {category_param}")
         category_value = getattr(Category, category_param.upper())
         product_list = Product.find_by_category(category_value)
+    elif available_param:
+        app.logger.info("request received to return products with availability: {available_param}")
+        available_value = available_param in ["true", "True"]
+        product_list = Product.find_by_availability(available_value)
     else:
         app.logger.info("request received to return all products")
         product_list = Product.all()
