@@ -22,6 +22,7 @@ from flask import jsonify, request, abort
 from flask import url_for  # noqa: F401 pylint: disable=unused-import
 from service.models import Product
 from service.common import status  # HTTP Status Codes
+from urllib.parse import quote_plus
 from . import app
 
 
@@ -101,10 +102,16 @@ def create_products():
 @app.route("/products", methods=["GET"])
 def list_products():
     """returns a list of all products"""
-    app.logger.info("request received to return all products")
-    product_list = Product.all()
+    name_param = request.args.get("name")
+    product_list = []
+    if name_param:
+        app.logger.info("request received to return products with name: {name_param}")
+        product_list = Product.find_by_name(name_param)
+    else:
+        app.logger.info("request received to return all products")
+        product_list = Product.all()
     data = [product.serialize() for product in product_list]
-    app.logger.info(f"{len(product_list)} products returned.")
+    app.logger.info(f"{len(data)} products returned.")
     return data, status.HTTP_200_OK
 
 
