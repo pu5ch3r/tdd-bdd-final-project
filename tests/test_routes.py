@@ -198,13 +198,13 @@ class TestProductRoutes(TestCase):
         # validate product updates
         data = response.get_json()
         self.assertEqual(data["description"], new_product["description"])
-        
+
     def test_delete_a_product(self):
         """It should delete a product by id"""
         # create some products
         products = self._create_products(5)
         count = self.get_product_count()
-        test_product = products[0]        
+        test_product = products[0]
         product_id = test_product.id
 
         # delete product
@@ -215,7 +215,7 @@ class TestProductRoutes(TestCase):
         # ensure product is deleted from db
         response = self.client.get(f"{BASE_URL}/{product_id}")
         data = response.get_json()
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)        
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertIn("not found", data["message"])
 
         new_count = self.get_product_count()
