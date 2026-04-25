@@ -135,7 +135,7 @@ def step_impl(context, element_name, text_string):
 
 @when(u'I press the "{button_name}" button')
 def step_impl(context, button_name):
-    element_id = button_name.lower().replace(' ', '_')
+    element_id = button_name.lower().replace(' ', '_') + "-btn"
     element = WebDriverWait(context.driver, context.wait_seconds).until(
         expected_conditions.presence_of_element_located((By.ID, element_id))
     )
