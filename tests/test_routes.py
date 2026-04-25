@@ -168,19 +168,17 @@ class TestProductRoutes(TestCase):
     # ADD YOUR TEST CASES HERE
     #
     def test_get_product(self):
-        """It should get a product"""
+        """It should either get a product or report 404 for products not found"""
+        response = self.client.get(f"{BASE_URL}/123456789")
+        data = response.get_json()
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertIn("not found", data["message"])
+
         test_product = self._create_products(1)[0]
         response = self.client.get(f"{BASE_URL}/{test_product.id}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(data["name"], test_product.name)
-
-    def test_get_product_not_found(self):
-        """It should report 404 for products not found"""
-        response = self.client.get(f"{BASE_URL}/123456789")
-        data = response.get_json()
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertIn("not found", data["message"])
 
     def test_update_a_product(self):
         """It should update a product"""
