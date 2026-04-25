@@ -76,6 +76,20 @@ Scenario: Update a Product
     And I should not see "1/4 lb burger" in the results
 
 Scenario: Delete a Product
+    When I visit the "Home Page"
+    And I set the "Name" to "Sheets"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Full bed sheets" in the "Description" field
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Delete" button
+    Then I should see the message "Product has been Deleted!"
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should not see "Full bed sheets" in the results
+
 
 Scenario: List all Products
 
