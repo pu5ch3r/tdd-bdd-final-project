@@ -141,65 +141,28 @@ def step_impl(context, button_name):
     )
     element.click()
 
-@then(u'I should see the message "Success"')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should see the message "Success"')
+@then(u'I should see the message "{message}"')
+def step_impl(context, message):
+    element_id = "flash_message"
+    element = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, element_id), 
+            message
+        )
+    )
+    assert(element)
 
+@then(u'I should see "{result_text}" in the results')
+def step_impl(context, result_text):
+    found = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'search_results'),
+            result_text
+        )
+    )
+    assert(found)
 
-@then(u'I should see "Yummy burger" in the results')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should see "Yummy burger" in the results')
-
-
-@then(u'I should not see "1/4 lb burger" in the results')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should not see "1/4 lb burger" in the results')
-
-@then(u'I should see the message "Product has been Deleted!"')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should see the message "Product has been Deleted!"')
-
-
-@then(u'I should not see "Full bed sheets" in the results')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should not see "Full bed sheets" in the results')
-
-
-@then(u'I should see "Hat" in the results')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should see "Hat" in the results')
-
-
-@then(u'I should see "Shoes" in the results')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should see "Shoes" in the results')
-
-
-@then(u'I should see "Sheets" in the results')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should see "Sheets" in the results')
-
-
-@then(u'I should see "Big Mac" in the results')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should see "Big Mac" in the results')
-
-
-@then(u'I should not see "Shoes" in the results')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should not see "Shoes" in the results')
-
-
-@then(u'I should not see "Sheets" in the results')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should not see "Sheets" in the results')
-
-
-@then(u'I should not see "Hat" in the results')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should not see "Hat" in the results')
-
-
-@when(u'I select "True" in the Available dropdown')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When I select "True" in the Available dropdown')
+@then(u'I should not see "{no_result_text}" in the results')
+def step_impl(context, no_result_text):
+    element = context.driver.find_element_by_id('search_results')
+    assert(no_result_text not in element.text)

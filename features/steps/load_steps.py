@@ -54,5 +54,5 @@ def step_impl(context):
             "available": row["available"] in ['true', 'True', '1'],
             "category": row["category"]
         }
-        context.resp = requests.post(f"{context.base_url}", json=payload)
-        assert(context.resp.status_code, HTTP_201_CREATED)
+        context.resp = requests.post(rest_endpoint, json=payload)
+        assert context.resp.status_code == HTTP_201_CREATED
