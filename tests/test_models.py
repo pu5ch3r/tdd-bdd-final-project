@@ -248,7 +248,7 @@ class TestProductModel(unittest.TestCase):
     def test_serialize_product(self):
         """It should serialize a product to a dictionary"""
 
-    def test_deserialize_product_exceptions(self):        
+    def test_deserialize_product_exceptions(self):
         """It should catch exceptions when deserialize a product from a dictionary"""
         # empty db
         self.assertEqual(len(Product.all()), 0)
@@ -260,7 +260,7 @@ class TestProductModel(unittest.TestCase):
             "available": "True",
             "category": "CLOTHS"
         }
-        product = Product()        
+        product = Product()
         with self.assertRaises(DataValidationError):
             product.deserialize(data=product_dict)
 
@@ -272,7 +272,7 @@ class TestProductModel(unittest.TestCase):
             "category": "AUTOMOTIVE"
         }
 
-        product = Product()        
+        product = Product()
         with self.assertRaises(DataValidationError):
             product.deserialize(data=product_dict)
 
@@ -284,12 +284,11 @@ class TestProductModel(unittest.TestCase):
             "category": "OTHER"
         }
 
-        product = Product()        
+        product = Product()
         with self.assertRaises(DataValidationError):
             product.deserialize(data=product_dict)
 
-
-    def test_deserialize_product(self):        
+    def test_deserialize_product(self):
         """It should deserialize a product from a dictionary"""
         # empty db
         self.assertEqual(len(Product.all()), 0)
@@ -307,4 +306,4 @@ class TestProductModel(unittest.TestCase):
         product.create()
 
         self.assertEqual(product.name, product_dict["name"])
-        self.assertEqual(product.description, product_dict["description"])        
+        self.assertEqual(product.description, product_dict["description"])
